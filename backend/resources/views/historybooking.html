@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lịch sử đặt phòng | The Reverie Saigon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #fff; color: #333; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+
+    nav a {
+      margin: 0 12px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .booking-btn {
+      background: #f58020;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    .banner img {
+      width: 100%;
+      height: auto;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    .filter {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #f8f8f8;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #222;
+      color: white;
+      padding: 40px 20px;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .footer-box {
+      width: 23%;
+      min-width: 220px;
+      margin-bottom: 20px;
+    }
+
+    .footer-box h4 {
+      margin-bottom: 10px;
+    }
+
+    .footer-box input, .footer-box textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .footer-box .socials a {
+      color: white;
+      margin-right: 10px;
+      text-decoration: none;
+    }
+
+    .payment-icons img {
+      height: 28px;
+      margin-right: 5px;
+    }
+
+    .policy-list, .support-form {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div><img src="https://i.imgur.com/W3fF3GI.png" alt="Logo" width="120"></div>
+    <nav>
+      <a href="#">HOME</a>
+      <a href="#">ROOMS</a>
+      <a href="#">BLOG</a>
+      <a href="#">ABOUT</a>
+      <a href="#">CONTACT</a>
+      <a href="#">LOGIN</a>
+      <a href="#" class="booking-btn">Booking now</a>
+    </nav>
+  </header>
+
+  <!-- Banner -->
+  <div class="banner">
+    <img src="https://i.imgur.com/JHQVoFB.jpg" alt="Banner">
+  </div>
+
+  <!-- Booking History -->
+  <div class="container">
+    <h2>LỊCH SỬ ĐẶT PHÒNG</h2>
+
+    <div class="filter">
+      <label>Trạng thái phòng: </label>
+      <select>
+        <option>Tất cả</option>
+        <option>Confirmed</option>
+        <option>Completed</option>
+        <option>Canceled</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>MÃ PHÒNG</th>
+          <th>TÊN PHÒNG</th>
+          <th>LOẠI PHÒNG</th>
+          <th>NGÀY NHẬN</th>
+          <th>NGÀY TRẢ</th>
+          <th>GIÁ</th>
+          <th>TRẠNG THÁI</th>
+          <th>THAO TÁC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>001</td>
+          <td>High Darkblue Rooms</td>
+          <td>Deluxe</td>
+          <td>12/10/2024 11:05:38</td>
+          <td>12/10/2024 11:05:38</td>
+          <td>2,140,000 ₫</td>
+          <td>Confirmed</td>
+          <td><button class="btn-delete">Delete</button></td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Simple Chess Rooms</td>
+          <td>Standard</td>
+          <td>12/10/2024 11:05:38</td>
+          <td>12/10/2024 11:05:38</td>
+          <td>2,140,000 ₫</td>
+          <td>Completed</td>
+          <td><button class="btn-delete">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-box">
+        <p><strong>THE REVERIE SAIGON</strong></p>
+        <p>Là điểm đến lý tưởng cho kỳ nghỉ sang trọng, cung cấp dịch vụ chuẩn 5 sao và không gian hiện đại giữa lòng TP.HCM.</p>
+        <img src="https://i.imgur.com/j3Gk79l.png" alt="Đã thông báo" height="40">
+      </div>
+
+      <div class="footer-box policy-list">
+        <h4>CHÍNH SÁCH</h4>
+        <p>Chính sách và giao nhận thanh toán</p>
+        <p>Chính sách bảo mật thông tin cá nhân</p>
+        <p>Điều khoản sử dụng</p>
+        <p>Khách hàng thân thiết</p>
+      </div>
+
+      <div class="footer-box support-form">
+        <h4>GỬI GMAIL HỖ TRỢ</h4>
+        <input type="email" placeholder="Nhập email của bạn">
+        <textarea rows="3" placeholder="Nhập văn bản"></textarea>
+      </div>
+
+      <div class="footer-box">
+        <h4>KẾT NỐI</h4>
+        <div class="socials">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+        </div>
+        <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+        <div class="payment-icons">
+          <img src="https://i.imgur.com/MdFPl5j.png" alt="Visa">
+          <img src="https://i.imgur.com/XJSkWdr.png" alt="MasterCard">
+          <img src="https://i.imgur.com/bJxUEDY.png" alt="Momo">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Service | The Reverie Saigon</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fff;
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .booking-btn {
+      background: #f58020;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .section-title {
+      text-align: center;
+      padding: 40px 0 10px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .divider {
+      width: 200px;
+      margin: 10px auto 40px;
+      height: 2px;
+      background-color: #ccc;
+    }
+
+    .service {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .service-item:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .service-item img {
+      width: 400px;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .service-info {
+      flex: 1;
+    }
+
+    .service-info h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .service-info p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .see-more {
+      background: #f3a738;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .pagination {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .pagination a {
+      margin: 0 8px;
+      padding: 8px 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    footer {
+      background: #222;
+      color: white;
+      padding: 40px;
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-box {
+      width: 30%;
+      min-width: 250px;
+      margin-bottom: 20px;
+    }
+
+    .footer-box h4 {
+      margin-bottom: 10px;
+    }
+
+    .footer-box input, .footer-box textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .footer-box .socials a {
+      color: white;
+      margin-right: 10px;
+      text-decoration: none;
+    }
+
+    .payment-icons img {
+      height: 30px;
+      margin-right: 5px;
+    }
+
+    .policy-list, .connect, .support-form {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="https://i.imgur.com/W3fF3GI.png" alt="Logo" width="120">
+    </div>
+    <nav>
+      <a href="#">HOME</a>
+      <a href="#">ROOMS</a>
+      <a href="#">SERVICE</a>
+      <a href="#">CONTACT</a>
+      <a href="#">LOGIN</a>
+      <a href="#" class="booking-btn">Booking now</a>
+    </nav>
+  </header>
+
+  <!-- Title -->
+  <h2 class="section-title">SERVICE</h2>
+  <div class="divider"></div>
+
+  <!-- Services -->
+  <section class="service">
+    <div class="service-item">
+      <img src="2.jpg" alt="Laundry">
+      <div class="service-info">
+        <h3>Launder</h3>
+        <p>Our hotel offers professional laundry services including clothes washing, drying, and folding. Fresh and clean outfits every day during your stay!</p>
+        <a href="#" class="see-more">SEE MORE</a>
+      </div>
+    </div>
+
+    <div class="service-item">
+      <img src="2.jpg" alt="Swimming Pool">
+      <div class="service-info">
+        <h3>Swimming Pool</h3>
+        <p>Enjoy our crystal-clear infinity pool with city views. Open daily from 6AM to 10PM. Free for all guests, towels provided at the pool desk.</p>
+        <a href="#" class="see-more">SEE MORE</a>
+      </div>
+    </div>
+
+    <div class="service-item">
+      <img src="2.jpg" alt="Billiards Club">
+      <div class="service-info">
+        <h3>Billiards Club</h3>
+        <p>Take time to relax at our modern Billiards Club. Equipped with high-quality tables, lounge chairs, and music – a perfect space to unwind.</p>
+        <a href="#" class="see-more">SEE MORE</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <a href="#">1</a>
+    <a href="#">2</a>
+    <a href="#">3</a>
+    <a href="#">4</a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-box">
+        <p><strong>THE REVERIE SAIGON</strong></p>
+        <p>Là một địa chỉ sang trọng giữa lòng Sài Gòn, nơi kết hợp giữa sự tinh tế, dịch vụ đẳng cấp và trải nghiệm tuyệt vời cho kỳ nghỉ của bạn.</p>
+        <img src="https://i.imgur.com/j3Gk79l.png" alt="Chứng nhận" height="40">
+      </div>
+
+      <div class="footer-box policy-list">
+        <h4>CHÍNH SÁCH</h4>
+        <p>Chính sách & quy định</p>
+        <p>Chính sách bảo mật</p>
+        <p>Điều khoản sử dụng</p>
+      </div>
+
+      <div class="footer-box support-form">
+        <h4>GỬI GMAIL HỖ TRỢ</h4>
+        <input type="text" placeholder="Họ và tên">
+        <input type="email" placeholder="Email">
+        <textarea rows="3" placeholder="Nội dung cần hỗ trợ"></textarea>
+      </div>
+
+      <div class="footer-box">
+        <h4>KẾT NỐI</h4>
+        <div class="socials">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+        </div>
+        <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+        <div class="payment-icons">
+          <img src="https://i.imgur.com/MdFPl5j.png" alt="Visa">
+          <img src="https://i.imgur.com/XJSkWdr.png" alt="MasterCard">
+          <img src="https://i.imgur.com/bJxUEDY.png" alt="Momo">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
