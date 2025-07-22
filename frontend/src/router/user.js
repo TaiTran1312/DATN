@@ -10,6 +10,7 @@ import ServiceDetail from '@/views/user/ServiceDetail.vue'
 import HistoryBooking from '@/views/user/HistoryBooking.vue'
 import LoginView from '@/views/user/LoginView.vue'
 import Register from '@/views/user/Register.vue'
+import Profile from '@/views/user/ProfileView.vue'
 
 export default [
     {
@@ -40,15 +41,20 @@ export default [
       name: 'room',
       component: RoomView,
     },
+    // {
+    //   path: '/roomdetail',
+    //   name: 'roomdetail',
+    //   component: RoomDetail,
+    // },
     {
-      path: '/roomdetail',
-      name: 'roomdetail',
-      component: RoomDetail,
+      path: '/roomdetail/:id',
+      name: 'RoomDetail',
+      component: () => import('@/views/user/RoomDetail.vue')
     },
     {
-      path: '/blogdetail',
+      path: '/blogdetail/:id',
       name: 'blogdetail',
-      component: BlogDetail,
+      component: () => import('@/views/user/BlogDetail.vue'),
     },
     {
       path: '/service',
@@ -75,4 +81,9 @@ export default [
       name: 'register',
       component: Register,
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+    }
 ]

@@ -7,6 +7,17 @@
         <div v-if="successMsg" class="alert alert-success">{{ successMsg }}</div>
         <div v-if="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
 
+        <!-- Người viết -->
+        <div class="mb-3">
+          <label class="form-label">Người viết</label>
+          <select v-model="form.user_id" class="form-select" required>
+            <option disabled value="">-- Chọn người viết --</option>
+            <option v-for="user in users" :key="user.user_id" :value="user.user_id">
+              {{ user.name }}
+            </option>
+          </select>
+        </div>
+
         <!-- Tiêu đề -->
         <div class="mb-3">
           <label class="form-label">Tiêu đề</label>
@@ -22,13 +33,12 @@
         <!-- Nội dung -->
         <div class="mb-3">
           <label class="form-label">Nội dung</label>
-          <textarea
-            v-model="form.content"
-            class="form-control"
-            rows="5"
-            required
-            placeholder="Nhập nội dung bài viết"
-          ></textarea>
+          <QuillEditor
+            v-model:content="form.content"
+            contentType="html"
+            toolbar="full"
+            class="editor"
+          />
         </div>
 
         <!-- Ảnh -->
@@ -37,9 +47,15 @@
           <input type="file" class="form-control" accept="image/*" @change="handleImage" />
         </div>
 
-        <!-- Preview ảnh -->
+        <!-- Ảnh hiện tại -->
+        <div v-if="form.image && !previewUrl" class="mb-3">
+          <label class="form-label">Ảnh hiện tại:</label><br />
+          <img :src="form.image" alt="Ảnh hiện tại" width="150" />
+        </div>
+
+        <!-- Preview ảnh mới -->
         <div v-if="previewUrl" class="mb-3">
-          <label class="form-label">Xem trước ảnh:</label><br />
+          <label class="form-label">Xem trước ảnh mới:</label><br />
           <img :src="previewUrl" alt="Preview" width="150" />
         </div>
 
@@ -57,6 +73,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from '@/axios'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,31 +82,47 @@ const postId = route.params.id
 
 const form = ref({
   title: '',
-  content: ''
+  content: '',
+  image: '',
+  user_id: ''
 })
 const imageFile = ref(null)
 const previewUrl = ref('')
 const successMsg = ref('')
 const errorMsg = ref('')
 const loading = ref(false)
+const users = ref([])
 
-// Xử lý chọn ảnh
+// Xử lý chọn ảnh mới
 const handleImage = (event) => {
   imageFile.value = event.target.files[0]
   previewUrl.value = URL.createObjectURL(imageFile.value)
 }
 
+// Tải danh sách người dùng
+const getUsers = async () => {
+  try {
+    const res = await axios.get('/users')
+    users.value = res.data?.data || res.data || []
+  } catch (err) {
+    console.error('❌ Lỗi khi tải danh sách người dùng:', err)
+  }
+}
+
 // Tải dữ liệu bài viết ban đầu
 onMounted(async () => {
+  await getUsers()
   try {
     const res = await axios.get(`/posts/${postId}`)
+    const data = res.data?.data || res.data
     form.value = {
-      title: res.data.title || '',
-      content: res.data.content || ''
+      title: data.title || '',
+      content: data.content || '',
+      image: data.image || '',
+      user_id: data.user_id || ''
     }
-    previewUrl.value = res.data.image || ''
   } catch (err) {
-    console.error('Lỗi tải dữ liệu:', err)
+    console.error('❌ Lỗi tải dữ liệu:', err)
     errorMsg.value = 'Không thể tải bài viết.'
   }
 })
@@ -101,6 +135,7 @@ const updatePost = async () => {
     const payload = new FormData()
     payload.append('title', form.value.title)
     payload.append('content', form.value.content)
+    payload.append('user_id', form.value.user_id)
     if (imageFile.value) {
       payload.append('image', imageFile.value)
     }
@@ -109,12 +144,18 @@ const updatePost = async () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
 
-    successMsg.value = 'Cập nhật bài viết thành công!'
+    successMsg.value = '✅ Cập nhật bài viết thành công!'
   } catch (err) {
-    console.error('Lỗi cập nhật:', err)
+    console.error('❌ Lỗi cập nhật:', err)
     errorMsg.value = err.response?.data?.message || 'Không thể cập nhật bài viết.'
   } finally {
     loading.value = false
   }
 }
 </script>
+
+<style scoped>
+.editor {
+  height: 300px;
+}
+</style>

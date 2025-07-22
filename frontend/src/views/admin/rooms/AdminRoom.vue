@@ -12,6 +12,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Ảnh</th>
             <th>Tên phòng</th>
             <th>Mô tả</th>
             <th>Giá</th>
@@ -25,6 +26,14 @@
         <tbody>
           <tr v-for="room in rooms" :key="room.room_id">
             <td>{{ room.room_id }}</td>
+            <td>
+              <img
+                :src="getImageSrc(room.image)"
+                alt="Ảnh phòng"
+                class="img-thumbnail"
+                style="width: 100px; height: 100px; object-fit: cover;"
+              />
+            </td>
             <td>{{ room.name }}</td>
             <td>{{ room.description }}</td>
             <td>{{ formatPrice(room.price) }}</td>
@@ -54,7 +63,7 @@ const successMsg = ref('')
 onMounted(async () => {
   try {
     const res = await axios.get('/rooms')
-    rooms.value = res.data
+    rooms.value = res.data?.data || []
   } catch (err) {
     console.error('Lỗi khi lấy danh sách phòng:', err)
   }
@@ -66,15 +75,16 @@ const formatPrice = (price) =>
 const formatDate = (str) => {
   if (!str) return 'Không xác định'
   const d = new Date(str)
-  return `${d.getDate().toString().padStart(2, '0')}/${d.getMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`
+  const pad = (n) => n.toString().padStart(2, '0')
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 const ucfirst = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : ''
 
 const statusClass = (status) => {
-  return status === 'available' ? 'badge bg-success' :
-         status === 'unavailable' ? 'badge bg-secondary' :
-         'badge bg-warning'
+  return status === 'available' ? 'badge bg-success'
+       : status === 'unavailable' ? 'badge bg-secondary'
+       : 'badge bg-warning'
 }
 
 const deleteRoom = async (id) => {
@@ -87,4 +97,16 @@ const deleteRoom = async (id) => {
     console.error('Lỗi khi xóa phòng:', err)
   }
 }
+
+const getImageSrc = (url) => {
+  if (!url) return '/img/default-room.jpg'
+  // Nếu ảnh đã là URL hoặc đường dẫn trực tiếp thì dùng luôn
+  if (url.startsWith('http') || url.startsWith('/storage')) return url
+  // Nếu là tên file thì nối với thư mục lưu ảnh trên server
+  return `/img/rooms/${url}`
+}
 </script>
+
+<style scoped>
+/* giữ nguyên CSS hiện tại */
+</style>

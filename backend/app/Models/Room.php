@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Service;
+use App\Models\TypeRoom as RoomType;
 
 class Room extends Model
 {
@@ -22,9 +24,9 @@ class Room extends Model
     ];
 
     // Quan hệ với bảng TypeRoom
-    public function TypeRoom()
+    public function roomType()
     {
-        return $this->belongsTo(TypeRoom::class, 'room_type_id');
+        return $this->belongsTo(RoomType::class, 'room_type_id', 'room_type_id');
     }
 
     // Quan hệ với bảng Services qua bảng trung gian room_service

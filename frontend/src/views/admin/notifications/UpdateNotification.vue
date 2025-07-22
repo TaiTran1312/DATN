@@ -19,6 +19,7 @@
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <router-link to="/admin/service" class="btn btn-secondary ms-2">Quay lại</router-link>
         <div v-if="successMsg" class="alert alert-success mt-3">{{ successMsg }}</div>
       </form>
     </main>

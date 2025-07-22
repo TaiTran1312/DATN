@@ -63,18 +63,21 @@ const loading = ref(true)
 onMounted(async () => {
   try {
     const res = await axios.get('/posts')
-    const data = res.data
-    posts.value = Array.isArray(data)
-      ? data
-      : Array.isArray(data.data)
-      ? data.data
+    const raw = res.data
+
+    posts.value = Array.isArray(raw)
+      ? raw
+      : Array.isArray(raw.data)
+      ? raw.data
       : []
+
   } catch (err) {
     console.error('Lỗi khi tải bài viết:', err)
   } finally {
     loading.value = false
   }
 })
+
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr)

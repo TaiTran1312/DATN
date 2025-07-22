@@ -17,6 +17,16 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
+    public function getCreatedAtFormattedAttribute()
+    {
+        return $this->created_at->format('d/m/Y H:i');
+    }
+
 }

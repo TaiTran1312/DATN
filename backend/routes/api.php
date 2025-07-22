@@ -35,7 +35,10 @@ Route::prefix('v1')->group(function () {
     Route::delete('/services/{id}', [ServiceApiController::class, 'destroy']);
     Route::put('/services/{id}', [ServiceApiController::class, 'update']);
 
+    Route::get('/rooms', [RoomApiController::class, 'index']);
     Route::get('/rooms/{id}', [RoomApiController::class, 'show']);
+    Route::post('/rooms', [RoomApiController::class, 'store']);
+    Route::delete('/rooms/{id}', [RoomApiController::class, 'destroy']);
     Route::put('/rooms/{id}', [RoomApiController::class, 'update']);
 
     Route::get('/room-types', [RoomTypeApiController::class, 'index']);
@@ -91,7 +94,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/orders/{id}/details', [OrderApiController::class, 'addOrderDetail']);
     Route::put('/orders/{id}/details/{detailId}', [OrderApiController::class, 'updateOrderDetail']);
     Route::delete('/orders/{id}/details/{detailId}', [OrderApiController::class, 'deleteOrderDetail']);
-    
+
 });
 
 

@@ -55,7 +55,7 @@
         <button type="submit" class="btn btn-primary" :disabled="loading">
           {{ loading ? 'Đang cập nhật...' : 'Cập nhật dịch vụ' }}
         </button>
-        <router-link to="/admin/services" class="btn btn-secondary ms-2">Quay lại</router-link>
+        <router-link to="/admin/service" class="btn btn-secondary ms-2">Quay lại</router-link>
       </form>
     </main>
   </AdminLayout>

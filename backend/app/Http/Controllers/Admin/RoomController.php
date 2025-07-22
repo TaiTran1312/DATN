@@ -21,8 +21,33 @@ class RoomController extends Controller
 
     public function store(Request $request)
     {
-        Room::create($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Thêm phòng thành công!');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'max_guests' => 'required|integer',
+            'room_type_id' => 'required|exists:room_types,room_type_id',
+            'status' => 'required|in:available,unavailable',
+            'image' => 'nullable|image',
+            'gallery.*' => 'nullable|image'
+        ]);
+
+        // Xử lý lưu ảnh vào storage nếu có
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('rooms');
+        }
+
+        if ($request->hasFile('gallery')) {
+            $gallery = [];
+            foreach ($request->file('gallery') as $file) {
+                $gallery[] = $file->store('rooms');
+            }
+            $validated['gallery'] = json_encode($gallery);
+        }
+
+        $room = Room::create($validated);
+
+        return response()->json(['success' => true, 'data' => $room]);
     }
 
     public function edit($id)
