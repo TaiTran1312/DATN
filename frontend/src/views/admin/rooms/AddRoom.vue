@@ -122,20 +122,24 @@ const createRoom = async () => {
 
   try {
     const data = new FormData()
-    for (const [key, val] of Object.entries(form.value)) {
-      data.append(key, val)
-    }
 
-    if (mainImage.value) {
+    Object.entries(form.value).forEach(([key, val]) => {
+      data.append(key, val)
+    })
+
+    if (mainImage.value instanceof File) {
       data.append('image', mainImage.value)
     }
 
     galleryImages.value.forEach((file) => {
-      data.append('gallery[]', file)
+      if (file instanceof File) {
+        data.append('gallery[]', file)
+      }
     })
 
-    // Đúng route cần gọi → phù hợp với Laravel
-    await axios.post('/rooms', data)
+    await axios.post('/rooms', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
 
     successMsg.value = '✅ Thêm phòng thành công!'
     setTimeout(() => router.push('/admin/room'), 1500)
@@ -144,11 +148,16 @@ const createRoom = async () => {
     console.error('Chi tiết:', err.response?.data || err)
   }
 }
-const getImageSrc = (url) => {
-  if (!url) return '/img/default-room.jpg'
-  if (url.startsWith('http') || url.startsWith('/storage')) return url
-  return `/storage/rooms/${url}`
-}
+
+const formatImage = (path) => {
+  if (!path) return '/img/default-room.jpg' // fallback ảnh mặc định
+
+  // Nếu đã là URL đầy đủ (http://...) hoặc bắt đầu bằng /storage
+  if (path.startsWith('http') || path.startsWith('/storage/')) return path
+
+  // Nếu chỉ là tên file (abc.jpg)
+  return `/storage/rooms/${path}`
+} 
 
 </script>
 

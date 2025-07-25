@@ -4,19 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\TypeRoom;
 use App\Http\Controllers\Controller;
 
 class RoomController extends Controller
 {
     public function index()
     {
-        $rooms = Room::all();
+        $rooms = Room::with('roomType')->latest()->get();
         return view('admin.rooms.index', compact('rooms'));
     }
 
     public function create()
     {
-        return view('admin.rooms.create');
+        $roomTypes = TypeRoom::all();
+        return view('admin.rooms.create', compact('roomTypes'));
     }
 
     public function store(Request $request)
@@ -28,43 +30,71 @@ class RoomController extends Controller
             'max_guests' => 'required|integer',
             'room_type_id' => 'required|exists:room_types,room_type_id',
             'status' => 'required|in:available,unavailable',
-            'image' => 'nullable|image',
-            'gallery.*' => 'nullable|image'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
-        // Xử lý lưu ảnh vào storage nếu có
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('rooms');
+            $validated['image'] = $request->file('image')->store('rooms', 'public');
         }
 
         if ($request->hasFile('gallery')) {
             $gallery = [];
             foreach ($request->file('gallery') as $file) {
-                $gallery[] = $file->store('rooms');
+                $gallery[] = $file->store('room_gallery', 'public');
             }
             $validated['gallery'] = json_encode($gallery);
         }
 
         $room = Room::create($validated);
 
-        return response()->json(['success' => true, 'data' => $room]);
+        return redirect()->route('admin.rooms.index')->with('success', '✅ Thêm phòng thành công!');
     }
 
     public function edit($id)
     {
         $room = Room::findOrFail($id);
-        return view('admin.rooms.edit', compact('room'));
+        $roomTypes = TypeRoom::all();
+        return view('admin.rooms.edit', compact('room', 'roomTypes'));
     }
+
     public function update(Request $request, $id)
     {
         $room = Room::findOrFail($id);
-        $room->update($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Cập nhật phòng thành công!');
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'max_guests' => 'required|integer',
+            'room_type_id' => 'required|exists:room_types,room_type_id',
+            'status' => 'required|in:available,unavailable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('rooms', 'public');
+        }
+
+        if ($request->hasFile('gallery')) {
+            $gallery = [];
+            foreach ($request->file('gallery') as $file) {
+                $gallery[] = $file->store('room_gallery', 'public');
+            }
+            $validated['gallery'] = json_encode($gallery);
+        }
+
+        $room->update($validated);
+
+        return redirect()->route('admin.rooms.index')->with('success', '✅ Cập nhật phòng thành công!');
     }
 
     public function destroy($id)
     {
-        Room::destroy($id);
-        return redirect()->route('rooms.index')->with('success', 'Xóa phòng thành công!');
+        $room = Room::findOrFail($id);
+        $room->delete();
+
+        return redirect()->route('admin.rooms.index')->with('success', '✅ Xóa phòng thành công!');
     }
 }

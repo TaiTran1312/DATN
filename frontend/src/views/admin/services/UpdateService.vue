@@ -3,11 +3,12 @@
     <main class="container mt-4">
       <h2 class="mb-4">Cập nhật dịch vụ</h2>
 
-      <form @submit.prevent="updateService">
+      <form @submit.prevent="updateService" enctype="multipart/form-data">
         <!-- Thông báo -->
         <div v-if="successMsg" class="alert alert-success">{{ successMsg }}</div>
         <div v-if="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
 
+        <!-- Tên -->
         <div class="mb-3">
           <label for="name" class="form-label">Tên dịch vụ</label>
           <input
@@ -15,22 +16,24 @@
             type="text"
             id="name"
             class="form-control"
-            placeholder="Nhập tên dịch vụ"
             required
+            placeholder="Nhập tên dịch vụ"
           />
         </div>
 
+        <!-- Mô tả -->
         <div class="mb-3">
           <label for="description" class="form-label">Mô tả</label>
           <textarea
             v-model="form.description"
             id="description"
             class="form-control"
-            placeholder="Nhập mô tả"
             rows="4"
+            placeholder="Nhập mô tả"
           ></textarea>
         </div>
 
+        <!-- Trạng thái -->
         <div class="mb-3">
           <label for="status" class="form-label">Trạng thái</label>
           <select v-model="form.status" id="status" class="form-select" required>
@@ -39,6 +42,7 @@
           </select>
         </div>
 
+        <!-- Giá -->
         <div class="mb-3">
           <label for="price" class="form-label">Giá dịch vụ (VNĐ)</label>
           <input
@@ -46,10 +50,28 @@
             type="number"
             id="price"
             class="form-control"
-            placeholder="Nhập giá dịch vụ"
             min="0"
             required
+            placeholder="Nhập giá dịch vụ"
           />
+        </div>
+
+        <!-- Ảnh -->
+        <div class="mb-3">
+          <label class="form-label">Chọn ảnh mới</label>
+          <input type="file" class="form-control" accept="image/*" @change="handleImage" />
+        </div>
+
+        <!-- Ảnh hiện tại -->
+        <div v-if="form.image && !previewUrl" class="mb-3">
+          <label class="form-label">Ảnh hiện tại:</label><br />
+          <img :src="form.image" alt="Ảnh hiện tại" width="150" />
+        </div>
+
+        <!-- Preview ảnh mới -->
+        <div v-if="previewUrl" class="mb-3">
+          <label class="form-label">Xem trước ảnh mới:</label><br />
+          <img :src="previewUrl" alt="Preview" width="150" />
         </div>
 
         <button type="submit" class="btn btn-primary" :disabled="loading">
@@ -75,21 +97,32 @@ const form = ref({
   name: '',
   description: '',
   status: '',
-  price: ''
+  price: '',
+  image: '' // đường dẫn ảnh hiện tại
 })
-
+const imageFile = ref(null)
+const previewUrl = ref('')
 const successMsg = ref('')
 const errorMsg = ref('')
 const loading = ref(false)
 
+// Chọn ảnh mới
+const handleImage = (event) => {
+  imageFile.value = event.target.files[0]
+  previewUrl.value = URL.createObjectURL(imageFile.value)
+}
+
+// Tải dữ liệu ban đầu
 onMounted(async () => {
   try {
     const res = await axios.get(`/services/${serviceId}`)
+    const data = res.data?.data || res.data
     form.value = {
-      name: res.data.name || '',
-      description: res.data.description || '',
-      status: res.data.status || 'active',
-      price: res.data.price || ''
+      name: data.name || '',
+      description: data.description || '',
+      status: data.status || 'active',
+      price: data.price || '',
+      image: data.image || ''
     }
   } catch (err) {
     errorMsg.value = 'Không thể tải thông tin dịch vụ.'
@@ -101,14 +134,32 @@ const updateService = async () => {
   loading.value = true
   successMsg.value = ''
   errorMsg.value = ''
+  const payload = new FormData()
+  payload.append('name', form.value.name)
+  payload.append('description', form.value.description)
+  payload.append('status', form.value.status)
+  payload.append('price', form.value.price)
+  if (imageFile.value) {
+    payload.append('image', imageFile.value)
+  }
+
   try {
-    await axios.put(`/services/${serviceId}`, form.value)
-    successMsg.value = 'Cập nhật dịch vụ thành công!'
+    await axios.post(`/services/${serviceId}?_method=PUT`, payload, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    successMsg.value = '✅ Cập nhật dịch vụ thành công!'
   } catch (err) {
-    errorMsg.value = 'Lỗi khi cập nhật dịch vụ.'
+    errorMsg.value = '❌ Lỗi khi cập nhật dịch vụ.'
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 </script>
+
+<style scoped>
+img {
+  object-fit: cover;
+  border-radius: 5px;
+}
+</style>

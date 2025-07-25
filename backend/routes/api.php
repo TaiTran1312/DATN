@@ -17,11 +17,15 @@ use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\Api\ContactApiController;
 use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\DashboardApiController;
 
 // Admin API
 Route::prefix('v1')->group(function () {
-    Route::get('rooms', [RoomApiController::class, 'index']);
-    Route::get('rooms/{id}', [RoomApiController::class, 'show']);
+    Route::get('/dashboard', [DashboardApiController::class, 'index']);
+    Route::get('/dashboard/stats', [DashboardApiController::class, 'stats']);
+    Route::get('/dashboard/chart', [DashboardApiController::class, 'chart']);
+    Route::get('/dashboard/users', [DashboardApiController::class, 'topUsers']);
+    Route::get('/dashboard/groups', [DashboardApiController::class, 'topGroups']);
 
     Route::get('/users', [UserApiController::class, 'index']);
     Route::get('/users/{id}', [UserApiController::class, 'show']);

@@ -11,11 +11,6 @@ use App\Models\TypeRoom as RoomType;
 class RoomApiController extends Controller
 {
     // GET /rooms
-    // public function index()
-    // {
-    //    return response()->json(Room::all());
-    // }
-
     public function index()
     {
         $rooms = Room::with('roomType')->get();
@@ -29,6 +24,7 @@ class RoomApiController extends Controller
                 'max_guests' => $room->max_guests,
                 'status' => $room->status,
                 'room_type_name' => optional($room->roomType)->name ?? 'Không xác định',
+                'image' => $room->image ? asset('storage/rooms/' . $room->image) : null,
                 'created_at' => $room->created_at
             ];
         });
@@ -36,13 +32,24 @@ class RoomApiController extends Controller
         return response()->json(['data' => $formatted]);
     }
 
-
-
     // GET /rooms/{id}
     public function show($id)
     {
-        $room = Room::findOrFail($id);
-        return response()->json($room);
+        $room = Room::with('roomType')->findOrFail($id);
+
+        return response()->json([
+            'data' => [
+                'room_id' => $room->room_id,
+                'name' => $room->name,
+                'description' => $room->description,
+                'price' => $room->price,
+                'max_guests' => $room->max_guests,
+                'status' => $room->status,
+                'room_type_name' => optional($room->roomType)->name ?? 'Không xác định',
+                'image' => $room->image ? asset('storage/rooms/' . $room->image) : null,
+                'created_at' => $room->created_at
+            ]
+        ]);
     }
 
     // POST /rooms
@@ -55,11 +62,17 @@ class RoomApiController extends Controller
             'price' => 'required|numeric|min:0',
             'max_guests' => 'required|integer|min:1',
             'type' => 'nullable|string',
-            'status' => 'required|in:available,unavailable'
+            'status' => 'required|in:available,unavailable',
+            'image' => 'nullable|image|max:2048'
         ]);
 
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('rooms', 'public');
+            $validated['image'] = basename($path);
+        }
+
         $room = Room::create($validated);
-        return response()->json($room, 201);
+        return response()->json(['data' => $room], 201);
     }
 
     // PUT /rooms/{id}
@@ -74,24 +87,30 @@ class RoomApiController extends Controller
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
                 'max_guests' => 'required|integer|min:1',
-                'status' => 'required|in:available,unavailable'
+                'status' => 'required|in:available,unavailable',
+                'image' => 'nullable|image|max:2048'
             ]);
 
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('rooms', 'public');
+                $validated['image'] = basename($path);
+            }
+
             $room->update($validated);
-            return response()->json($room);
+            return response()->json(['data' => $room]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
-
     // DELETE /rooms/{id}
     public function destroy($id)
     {
         Room::destroy($id);
-        return response()->json(['message' => 'Đã xóa phòng thành công']);
+        return response()->json(['message' => '✅ Đã xóa phòng thành công']);
     }
 
+    // Quan hệ
     public function roomType()
     {
         return $this->belongsTo(RoomType::class, 'room_type_id');
@@ -101,5 +120,13 @@ class RoomApiController extends Controller
     {
         return $this->belongsToMany(Service::class, 'room_service', 'room_id', 'service_id');
     }
+    private function getImageUrl($filename)
+    {
+        return $filename ? asset('storage/rooms/' . $filename) : null;
+    }
 
+    public function roomServices()
+    {
+        return $this->belongsToMany(Service::class, 'room_service', 'room_id', 'service_id');
+    }
 }

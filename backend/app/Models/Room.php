@@ -14,13 +14,14 @@ class Room extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
-        'room_type_id',
-        'name',
-        'description',
-        'price',
-        'max_guests',
-        'type',
-        'status'
+    'room_type_id',
+    'name',
+    'description',
+    'price',
+    'max_guests',
+    'type',
+    'status',
+    'image'
     ];
 
     // Quan hệ với bảng TypeRoom

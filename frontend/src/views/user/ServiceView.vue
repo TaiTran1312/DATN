@@ -10,46 +10,52 @@
     relax and enjoy their free time
   </p>
 
-  <section class="container">
+  <section class="container" v-if="services.length > 0">
     <hr />
-    <div v-for="(service, index) in services" :key="service.id" class="service" :class="{ 'reverse': index % 2 !== 0 }">
-      <img :src="`/storage/${service.image}`" :alt="service.name" />
+    <div
+      v-for="(service, index) in services.filter(s => s.status === 'active')"
+      :key="service.service_id"
+      class="service"
+      :class="{ reverse: index % 2 !== 0 }"
+    >
+      <img :src="service.image" :alt="service.name" />
       <div class="service-content">
         <h3 class="service-title">{{ service.name }}</h3>
         <p class="service-text">{{ service.description }}</p>
-       <router-link :to="`/services/${service.id}`">SEE MORE</router-link>
-
+        <router-link :to="`/servicedetail/${service.service_id}`">SEE MORE</router-link>
       </div>
     </div>
     <hr />
 
     <div class="pagination">
-      <a href="#">1</a>
-      <a href="#">2</a>
-      <a href="#">3</a>
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
     </div>
   </section>
+
   <Footer />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import HeaderComponent from '@/components/common/Header.vue';
-import Footer from '@/components/common/Footer.vue';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import HeaderComponent from '@/components/common/Header.vue'
+import Footer from '@/components/common/Footer.vue'
 
-const services = ref([]);
+const services = ref([])
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/v1/services');
-    services.value = response.data;
+    const res = await axios.get('http://localhost:8000/api/v1/services')
+    services.value = res.data?.data || res.data || []
+    console.log('📦 Dịch vụ:', services.value)
   } catch (error) {
-    console.error('Error loading services:', error);
+    console.error('❌ Lỗi khi tải dịch vụ:', error.response?.data || error.message)
   }
-});
+})
 </script>
 
-<style>
-
+<style scoped>
+/* Thêm CSS nếu cần */
 </style>

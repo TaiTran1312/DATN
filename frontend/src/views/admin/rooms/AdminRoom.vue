@@ -6,9 +6,9 @@
       <router-link to="/admin/rooms/add-room" class="btn btn-primary mb-3">Thêm Phòng</router-link>
 
       <div v-if="successMsg" class="alert alert-success">{{ successMsg }}</div>
-      <div v-if="rooms.length === 0" class="alert alert-info">Chưa có phòng nào được thêm.</div>
+      <div v-else-if="rooms.length === 0" class="alert alert-info">Chưa có phòng nào được thêm.</div>
 
-      <table v-if="rooms.length > 0" class="table table-bordered">
+      <table v-if="rooms.length > 0" class="table table-bordered text-center align-middle">
         <thead>
           <tr>
             <th>ID</th>
@@ -28,10 +28,11 @@
             <td>{{ room.room_id }}</td>
             <td>
               <img
-                :src="getImageSrc(room.image)"
+                :src="formatImage(room.image)"
                 alt="Ảnh phòng"
                 class="img-thumbnail"
-                style="width: 100px; height: 100px; object-fit: cover;"
+                width="100"
+                height="100"
               />
             </td>
             <td>{{ room.name }}</td>
@@ -42,8 +43,14 @@
             <td><span :class="statusClass(room.status)">{{ ucfirst(room.status) }}</span></td>
             <td>{{ formatDate(room.created_at) }}</td>
             <td>
-              <router-link :to="`/admin/rooms/${room.room_id}/update-room`" class="btn btn-sm btn-warning me-1">Sửa</router-link>
-              <button class="btn btn-sm btn-danger" @click="deleteRoom(room.room_id)">Xóa</button>
+              <router-link
+                :to="`/admin/rooms/${room.room_id}/update-room`"
+                class="btn btn-sm btn-warning me-1"
+              >Sửa</router-link>
+              <button
+                class="btn btn-sm btn-danger"
+                @click="deleteRoom(room.room_id)"
+              >Xóa</button>
             </td>
           </tr>
         </tbody>
@@ -65,7 +72,7 @@ onMounted(async () => {
     const res = await axios.get('/rooms')
     rooms.value = res.data?.data || []
   } catch (err) {
-    console.error('Lỗi khi lấy danh sách phòng:', err)
+    console.error('❌ Lỗi khi lấy danh sách phòng:', err)
   }
 })
 
@@ -82,8 +89,8 @@ const formatDate = (str) => {
 const ucfirst = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : ''
 
 const statusClass = (status) => {
-  return status === 'available' ? 'badge bg-success'
-       : status === 'unavailable' ? 'badge bg-secondary'
+  return status?.toLowerCase() === 'available' ? 'badge bg-success'
+       : status?.toLowerCase() === 'unavailable' ? 'badge bg-secondary'
        : 'badge bg-warning'
 }
 
@@ -92,21 +99,32 @@ const deleteRoom = async (id) => {
   try {
     await axios.delete(`/rooms/${id}`)
     rooms.value = rooms.value.filter(r => r.room_id !== id)
-    successMsg.value = 'Xóa phòng thành công!'
+    successMsg.value = '✅ Xóa phòng thành công!'
   } catch (err) {
-    console.error('Lỗi khi xóa phòng:', err)
+    console.error('❌ Lỗi khi xóa phòng:', err)
   }
 }
 
-const getImageSrc = (url) => {
-  if (!url) return '/img/default-room.jpg'
-  // Nếu ảnh đã là URL hoặc đường dẫn trực tiếp thì dùng luôn
-  if (url.startsWith('http') || url.startsWith('/storage')) return url
-  // Nếu là tên file thì nối với thư mục lưu ảnh trên server
-  return `/img/rooms/${url}`
+const formatImage = (path) => {
+  if (!path) return '/img/default-room.jpg' // fallback ảnh mặc định
+
+  // Nếu đã là URL đầy đủ (http://...) hoặc bắt đầu bằng /storage
+  if (path.startsWith('http') || path.startsWith('/storage/')) return path
+
+  // Nếu chỉ là tên file (abc.jpg)
+  return `/storage/rooms/${path}`
 }
+
+
 </script>
 
 <style scoped>
-/* giữ nguyên CSS hiện tại */
+td img {
+  border-radius: 6px;
+  object-fit: cover;
+}
+.badge {
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
 </style>

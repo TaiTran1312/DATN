@@ -19,8 +19,15 @@
     </div>
 
     <div class="room-list">
-      <div class="room" v-for="room in rooms" :key="room.room_id">
-        <img :src="room.image ? `/storage/img/${room.image}` : '/img/default-room.jpg'" alt="Room image" />
+      <div
+        class="room"
+        v-for="room in rooms.filter(r => r.status?.toLowerCase() === 'available')"
+        :key="room.room_id"
+      >
+        <img
+          :src="room.image ? formatImage(room.image) : '/img/default-room.jpg'"
+          alt="Room image"
+        />
         <div class="room-details">
           <h3>{{ room.name }}</h3>
           <p>{{ room.description }}</p>
@@ -28,6 +35,7 @@
           <p class="text-muted">Trạng thái: <strong>{{ ucfirst(room.status) }}</strong></p>
           <p class="text-muted">Giá: <strong>{{ formatPrice(room.price) }} đ/Night</strong></p>
           <p class="text-muted">Loại phòng: {{ room.room_type_name }}</p>
+
           <div class="icons">
             <div class="row">
               <span>👤 {{ room.max_guests }} Person</span>
@@ -44,7 +52,9 @@
           <div class="room-footer">
             <strong>{{ formatPrice(room.price) }} đ/Night</strong>
             <div class="room-buttons">
-              <router-link :to="`/roomdetail/${room.room_id}`" class="detail-link">See detail</router-link>
+              <router-link :to="`/roomdetail/${room.room_id}`" class="detail-link">
+                See detail
+              </router-link>
               <button class="book-btn">Book Now</button>
             </div>
           </div>
@@ -72,7 +82,7 @@ import Footer from '@/components/common/Footer.vue'
 
 const rooms = ref([])
 
-const getRooms = async () => {
+onMounted(async () => {
   try {
     const response = await axios.get('http://localhost:8000/api/v1/rooms')
     rooms.value = response.data?.data || []
@@ -80,16 +90,26 @@ const getRooms = async () => {
   } catch (error) {
     console.error('❌ Failed to fetch rooms:', error)
   }
-}
-
-onMounted(() => {
-  getRooms()
 })
+
+// Format ảnh
+const formatImage = (path) => {
+  if (!path) return '/default.jpg'
+
+  // Nếu path đã có dạng đầy đủ
+  if (path.startsWith('http')) return path
+
+  // Nếu path trả về là 'services/abc.jpg'
+  if (path.startsWith('services/')) return `/storage/${path}`
+
+  // Nếu chỉ là tên ảnh
+  return `/storage/${path}`
+}
 
 const formatPrice = (val) => new Intl.NumberFormat('vi-VN').format(val)
 const ucfirst = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : ''
 const resetFilters = () => {
-  // reset logic nếu có
+  // Reset logic nếu có
 }
 </script>
 
@@ -121,5 +141,8 @@ const resetFilters = () => {
   border: none;
   padding: 6px 12px;
   border-radius: 4px;
+}
+.room {
+  margin-bottom: 40px;
 }
 </style>

@@ -62,9 +62,9 @@ export default [
       component: ServiceView,
     },
     {
-      path: '/servicedetail',
+      path: '/servicedetail/:id',
       name: 'servicedetail',
-      component: ServiceDetail,
+      component: () => import('@/views/user/ServiceDetail.vue'),
     },
     {
       path: '/historybooking',

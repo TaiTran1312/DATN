@@ -53,34 +53,15 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import axios from '@/axios'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BarChart from '@/components/admin/BarChart.vue'
-import { ref, onMounted } from 'vue'
 
-const statCards = ref([
-  { label: 'Active Users', value: '27 / 80' },
-  { label: 'Questions Answered', value: '3,298' },
-  { label: 'Av. Session Length', value: '2m 34s' },
-  { label: 'Starting Knowledge', value: '64%' },
-  { label: 'Current Knowledge', value: '86%' },
-  { label: 'Knowledge Gain', value: '+34%' }
-])
-
-const chartData = ref({}) // Có thể truyền dữ liệu dạng { labels: [...], datasets: [...] }
-
-const topUsers = ref([
-  { id: 1, name: 'Jesse Thomas', score: 637, avatar: 'user1.jpg' },
-  { id: 2, name: 'Thisal M.', score: 598, avatar: 'user2.jpg' },
-  { id: 3, name: 'Helen Chuang', score: 542, avatar: 'user3.jpg' }
-])
-
-const topGroups = ref([
-  'Houston Facility',
-  'Test Group',
-  'Sales Leadership',
-  'Northeast Region',
-  'Southeast Region'
-])
+const statCards = ref([])
+const chartData = ref({})
+const topUsers = ref([])
+const topGroups = ref([])
 
 const getImageSrc = (url) => {
   if (!url) return '/img/default-avatar.jpg'
@@ -88,13 +69,30 @@ const getImageSrc = (url) => {
   return `/storage/users/${url}`
 }
 
-// Nếu dùng API thật:
-// onMounted(async () => {
-//   const res = await axios.get('/dashboard/stats')
-//   statCards.value = res.data.stats
-//   chartData.value = res.data.chart
-//   topUsers.value = res.data.users
-// })
+onMounted(async () => {
+  try {
+    // Thống kê tổng quan
+    const stats = await axios.get('/dashboard/stats')
+    statCards.value = [
+      { label: 'Tổng số phòng', value: stats.data.total_rooms },
+      { label: 'Tổng người dùng', value: stats.data.total_users },
+      { label: 'Tổng lượt đặt', value: stats.data.total_bookings }
+    ]
+
+    // Nếu backend có biểu đồ
+    const chart = await axios.get('/dashboard/chart')
+    chartData.value = chart.data
+
+    // Lấy bảng xếp hạng
+    const usersRes = await axios.get('/dashboard/users')
+    topUsers.value = usersRes.data || []
+
+    const groupsRes = await axios.get('/dashboard/groups')
+    topGroups.value = groupsRes.data || []
+  } catch (err) {
+    console.error('❌ Lỗi khi tải dashboard:', err.response?.data || err)
+  }
+})
 </script>
 
 <style scoped>

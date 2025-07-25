@@ -60,7 +60,7 @@
             <img :src="previewMainImage" alt="Ảnh mới" style="max-width: 150px;" class="mb-2" />
           </div>
           <div v-else-if="form.image">
-            <img :src="getImageSrc(form.image)" alt="Ảnh hiện tại" style="max-width: 150px;" class="mb-2" />
+            <img :src="formatImage(form.image)" alt="Ảnh hiện tại" style="max-width: 150px;" class="mb-2" />
           </div>
           <input type="file" class="form-control" accept="image/*" @change="handleMainImage" />
         </div>
@@ -72,7 +72,7 @@
             <img
               v-for="(img, i) in form.gallery"
               :key="`old-${i}`"
-              :src="getImageSrc(img)"
+              :src="formatImage(img)"
               alt="Ảnh phụ"
               style="max-width: 100px;"
             />
@@ -137,9 +137,14 @@ const galleryImages = ref([])
 const previewMainImage = ref(null)
 const previewGallery = ref([])
 
-const getImageSrc = (url) => {
-  if (!url) return '/img/default-room.jpg'
-  return url.startsWith('http') ? url : `/img/rooms/${url}`
+const formatImage = (path) => {
+  if (!path) return '/img/default-room.jpg' // fallback ảnh mặc định
+
+  // Nếu đã là URL đầy đủ (http://...) hoặc bắt đầu bằng /storage
+  if (path.startsWith('http') || path.startsWith('/storage/')) return path
+
+  // Nếu chỉ là tên file (abc.jpg)
+  return `/storage/rooms/${path}`
 }
 
 const handleMainImage = (e) => {
